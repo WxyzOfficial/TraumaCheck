@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>TraumaCheck · login</title>
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="https://wxyzofficial.sirv.com/TraumaCheck/traumacheck.png">
+  <link rel="shortcut icon" href="https://wxyzofficial.sirv.com/TraumaCheck/traumacheck.png">
+  <link rel="apple-touch-icon" href="https://wxyzofficial.sirv.com/TraumaCheck/traumacheck.png">
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (Free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Firebase Modular SDK (v9+) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"
+      }
+    }
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(145deg, #f3edff, #e9defa);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* subtle decorative circles */
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      background: rgba(124, 58, 237, 0.06);
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::before {
+      width: 400px;
+      height: 400px;
+      top: -120px;
+      right: -80px;
+    }
+    body::after {
+      width: 300px;
+      height: 300px;
+      bottom: -100px;
+      left: -60px;
+    }
+
+    /* glassmorphism login card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 48px;
+      box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.06),
+        0 10px 20px rgba(0, 0, 0, 0.02),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 40px 70px rgba(0, 0, 0, 0.08);
+    }
+
+    .logo-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      border-radius: 24px;
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 12px 28px rgba(124, 58, 237, 0.25);
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #1e1a2e;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      color: #6a5a7a;
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-google {
+      background: #7c3aed;
+      color: white;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-google::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+      pointer-events: none;
+    }
+
+    .btn-google:hover {
+      background: #6d28d9;
+      transform: scale(1.01);
+      box-shadow: 0 12px 32px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-google:active {
+      transform: scale(0.97);
+    }
+
+    .btn-google:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-google i {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .disclaimer {
+      margin-top: 1.8rem;
+      font-size: 0.75rem;
+      color: #8a7a9a;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+      border-top: 1px solid rgba(124, 58, 237, 0.08);
+      padding-top: 1.5rem;
+    }
+
+    .disclaimer i {
+      margin-right: 6px;
+      opacity: 0.6;
+    }
+
+    /* footer */
+    .footer {
+      text-align: center;
+      padding: 1.2rem 1.5rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      margin-top: auto;
+      font-size: 0.85rem;
+      color: #4b4453;
+      letter-spacing: 0.02em;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer .heart {
+      color: #7c3aed;
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    .footer span {
+      display: block;
+      margin-top: 6px;
+      font-style: italic;
+      color: #7a6a8a;
+      font-weight: 300;
+      font-size: 0.8rem;
+    }
+
+    .footer span i {
+      color: #9a8aaa;
+      margin: 0 4px;
+      font-size: 0.7rem;
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e1a2e;
+      color: white;
+      padding: 14px 32px;
+      border-radius: 60px;
+      z-index: 999;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+      font-size: 0.9rem;
+      max-width: 90%;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .toast i {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      border: 2.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* responsive */
+    @media (max-width: 480px) {
+      .glass-card {
+        padding: 2rem 1.5rem;
+        border-radius: 32px;
+        margin: 0 0.75rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .logo-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.6rem;
+        border-radius: 20px;
+      }
+      .btn-google {
+        font-size: 0.95rem;
+        padding: 14px 18px;
+      }
+      .footer {
+        font-size: 0.75rem;
+        padding: 1rem;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+      .glass-card {
+        padding: 2.5rem 2rem;
+      }
+    }
+
+    /* focus styles for accessibility */
+    .btn-google:focus-visible {
+      outline: 3px solid #7c3aed;
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loginContainer" style="flex:1;display:flex;align-items:center;justify-content:center;padding:1.5rem;position:relative;z-index:1;">
+    <div class="glass-card">
+      <!-- Logo icon -->
+      <div class="logo-icon" aria-hidden="true">
+        <i class="fas fa-brain"></i>
+      </div>
+
+      <h1>TraumaCheck</h1>
+      <p class="subtitle">Secure, Evidence-Based Trauma Screening and Progress Tracking</p>
+
+      <button class="btn-google" id="googleSignInBtn" aria-label="Sign in with Google">
+        <i class="fab fa-google" aria-hidden="true"></i>
+        <span>Continue with Google</span>
+      </button>
+
+      <div class="disclaimer">
+        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+        educational screening tool · not a diagnosis
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>
+      Developed by: John Steven Amistoso Macapañas
+      <span>
+        <i class="fas fa-quote-left" aria-hidden="true"></i>
+        "To heal is to touch with love that which we previously touched with fear."
+        <i class="fas fa-quote-right" aria-hidden="true"></i>
+        — Stephen Levine
+      </span>
+    </div>
+  </footer>
+
+  <script type="module">
+    // ----- FIREBASE CONFIG -----
+    import { initializeApp } from 'firebase/app';
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
+    import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC0Q2HE0khhr4_NG9hej0TTFqcyxjc-GIY",
+      authDomain: "traumachech.firebaseapp.com",
+      projectId: "traumachech",
+      storageBucket: "traumachech.firebasestorage.app",
+      messagingSenderId: "269250145901",
+      appId: "1:269250145901:web:d939e907990a961eb25964",
+      measurementId: "G-K4G0H9TDFG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // ----- DOM refs -----
+    const loginBtn = document.getElementById('googleSignInBtn');
+
+    // ----- Toast helper -----
+    function showToast(msg, duration = 3500) {
+      const old = document.querySelector('.toast');
+      if (old) old.remove();
+
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.setAttribute('role', 'alert');
+      t.innerHTML = `<i class="fas fa-circle-exclamation" aria-hidden="true"></i> ${msg}`;
+      document.body.appendChild(t);
+
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => t.remove(), 300);
+      }, duration);
+    }
+
+    // ----- Handle sign-in -----
+    async function handleGoogleSignIn() {
+      // Disable button and show spinner
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Signing in...';
+
+      try {
+        await signInWithPopup(auth, provider);
+        // Redirect handled by onAuthStateChanged
+      } catch (error) {
+        console.error('Sign-in error:', error);
+
+        let msg = 'Sign-in failed. Please try again.';
+        if (error.code === 'auth/popup-closed-by-user') {
+          msg = 'Sign-in popup closed. Please try again.';
+        } else if (error.code === 'auth/network-request-failed') {
+          msg = 'Network error. Check your connection.';
+        } else if (error.code === 'auth/too-many-requests') {
+          msg = 'Too many attempts. Please wait a moment.';
+        }
+
+        showToast(msg);
+
+        // Reset button
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `
+          <i class="fab fa-google" aria-hidden="true"></i>
+          <span>Continue with Google</span>
+        `;
+      }
+    }
+
+    // ----- Auth state listener -----
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Ensure user document exists in Firestore
+        try {
+          const userRef = doc(db, 'users', user.uid);
+          const snap = await getDoc(userRef);
+          if (!snap.exists()) {
+            await setDoc(userRef, {
+              name: user.displayName || 'User',
+              email: user.email,
+              photo: user.photoURL || '',
+              createdAt: serverTimestamp()
+            });
+          }
+        } catch (e) {
+          console.warn('Could not create user doc:', e);
+          // Still redirect — user is authenticated
+        }
+
+        // Redirect to main.html
+        window.location.href = 'main.html';
+      } else {
+        // User is signed out, reset button
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `
+          <i class="fab fa-google" aria-hidden="true"></i>
+          <span>Continue with Google</span>
+        `;
+      }
+    });
+
+    // ----- Event listener -----
+    loginBtn.addEventListener('click', handleGoogleSignIn);
+
+    // Handle page visibility to re-check auth state (edge cases)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !auth.currentUser) {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `
+          <i class="fab fa-google" aria-hidden="true"></i>
+          <span>Continue with Google</span>
+        `;
+      }
+    });
+
+    console.log('TraumaCheck · login page ready');
+  </script>
+</body>
+</html>
