@@ -293,41 +293,55 @@
       margin-top: 4px;
     }
 
-    /* ===== STATS EXPLANATION ===== */
-    .stats-explanation {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
+    /* ===== STATS LIST (for explanation) ===== */
+    .stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
-    .stats-explanation .explain-item {
-      background: #f8f5ff;
+    .stats-list-item {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem 0.8rem;
       border-radius: 16px;
-      padding: 0.8rem 1rem;
-      border-left: 3px solid #7c3aed;
+      background: #faf8ff;
+      border: 1px solid #f1edf9;
+      gap: 12px;
     }
 
-    .stats-explanation .explain-item .explain-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      color: #7a6a8a;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+    .stats-list-item .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ede9fe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #7c3aed;
+      font-size: 0.9rem;
+      flex-shrink: 0;
     }
 
-    .stats-explanation .explain-item .explain-value {
+    .stats-list-item .label {
+      font-weight: 500;
+      color: #4b4453;
+      font-size: 0.9rem;
+      flex: 1;
+    }
+
+    .stats-list-item .value {
       font-weight: 600;
-      font-size: 0.95rem;
       color: #1e1a2e;
-      margin-top: 2px;
+      font-size: 0.95rem;
+      text-align: right;
     }
 
-    .stats-explanation .explain-item .explain-desc {
-      font-size: 0.8rem;
+    .stats-list-item .description {
       color: #7a6a8a;
-      margin-top: 4px;
-      line-height: 1.4;
+      font-size: 0.75rem;
+      display: block;
+      font-weight: 400;
     }
 
     /* ===== MOBILE MENU ===== */
@@ -402,10 +416,6 @@
       .stat-value {
         font-size: 1.5rem;
       }
-
-      .stats-explanation {
-        grid-template-columns: 1fr;
-      }
     }
 
     @media (max-width: 480px) {
@@ -426,6 +436,17 @@
       .card {
         padding: 1.2rem;
         border-radius: 24px;
+      }
+
+      .stats-list-item {
+        flex-wrap: wrap;
+        padding: 0.5rem 0.6rem;
+      }
+
+      .stats-list-item .value {
+        width: 100%;
+        text-align: left;
+        padding-left: 44px;
       }
     }
 
@@ -766,7 +787,8 @@
       orderBy,
       deleteDoc,
       addDoc,
-      serverTimestamp
+      serverTimestamp,
+      writeBatch
     } from 'firebase/firestore';
 
     const firebaseConfig = {
@@ -788,6 +810,7 @@
     let allTests = [];
     let currentQuestionIndex = 0;
     let answers = new Array(30).fill(null);
+    let isInitialized = false;
 
     // ----- DOM REFS -----
     const appEl = document.getElementById('app');
@@ -859,34 +882,18 @@
       const lastDate = recent ? formatDate(recent.timestamp) : '—';
       const highest = scores.length ? Math.max(...scores) : 0;
       const lowest = scores.length ? Math.min(...scores) : 0;
-      
-      // Calculate severity distribution for explanation
-      const severityCounts = {};
-      allTests.forEach(t => { severityCounts[t.severity] = (severityCounts[t.severity] || 0) + 1; });
-      const mostCommonSeverity = Object.entries(severityCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'None';
-      
-      // Calculate trend
-      let trendText = 'No trend data available';
-      let trendIcon = 'fa-minus';
-      let trendColor = '#7a6a8a';
-      if (allTests.length >= 2) {
-        const first = allTests[allTests.length - 1].score;
-        const last = allTests[0].score;
-        const diff = last - first;
-        if (diff > 0) {
-          trendText = `Improving (${diff} point decrease)`;
-          trendIcon = 'fa-arrow-down';
-          trendColor = '#22c55e';
-        } else if (diff < 0) {
-          trendText = `Worsening (${Math.abs(diff)} point increase)`;
-          trendIcon = 'fa-arrow-up';
-          trendColor = '#ef4444';
-        } else {
-          trendText = 'Stable (no change)';
-          trendIcon = 'fa-minus';
-          trendColor = '#7a6a8a';
-        }
-      }
+
+      // Severity descriptions
+      const severityDescriptions = {
+        'Minimal': 'Low levels of trauma-related distress. You appear to be coping well.',
+        'Mild': 'Some trauma symptoms present. Self-care and support may be beneficial.',
+        'Moderate': 'Noticeable trauma symptoms. Consider speaking with a professional.',
+        'High': 'Significant trauma symptoms. Professional support is recommended.',
+        'Very High': 'Severe trauma symptoms. Please seek professional help.',
+        '—': 'No tests taken yet.'
+      };
+
+      const severityDesc = severityDescriptions[latestLevel] || 'No tests taken yet.';
 
       appEl.innerHTML = `
         <div class="app-layout">
@@ -971,56 +978,77 @@
                   <i class="fas fa-hand-peace" style="margin-right:8px;color:#7c3aed;"></i>
                   Welcome back, ${user.displayName || 'user'}.
                 </p>
-                
+
                 <div style="border-top:1px solid #f1edf9;padding-top:1rem;">
-                  <h3 style="font-size:0.9rem;font-weight:600;color:#4b4453;margin-bottom:0.8rem;">
+                  <h3 style="font-weight:600;font-size:0.95rem;color:#1e1a2e;margin-bottom:0.8rem;">
                     <i class="fas fa-chart-simple" style="color:#7c3aed;margin-right:8px;"></i>
-                    Understanding Your Statistics
+                    Your Statistics Explained
                   </h3>
-                  <div class="stats-explanation">
-                    <div class="explain-item">
-                      <div class="explain-label"><i class="fas fa-clipboard-list" style="margin-right:4px;"></i>Total Tests</div>
-                      <div class="explain-value">${allTests.length} assessment${allTests.length !== 1 ? 's' : ''}</div>
-                      <div class="explain-desc">Number of times you've completed the trauma screening. More tests help track your progress over time.</div>
-                    </div>
-                    <div class="explain-item">
-                      <div class="explain-label"><i class="fas fa-tag" style="margin-right:4px;"></i>Latest Severity</div>
-                      <div class="explain-value" style="color:${latestLevel === 'Minimal' ? '#22c55e' : latestLevel === 'Mild' ? '#eab308' : latestLevel === 'Moderate' ? '#f59e0b' : latestLevel === 'High' ? '#ef4444' : '#b91c1c'};">${latestLevel}</div>
-                      <div class="explain-desc">Your most recent trauma symptom severity level. Ranges from Minimal to Very High.</div>
-                    </div>
-                    <div class="explain-item">
-                      <div class="explain-label"><i class="fas fa-calculator" style="margin-right:4px;"></i>Average Score</div>
-                      <div class="explain-value">${avg.toFixed(1)} / 120</div>
-                      <div class="explain-desc">Your mean score across all tests. Lower scores generally indicate fewer trauma symptoms.</div>
-                    </div>
-                    <div class="explain-item">
-                      <div class="explain-label"><i class="fas fa-arrow-trend-up" style="margin-right:4px;"></i>Score Trend</div>
-                      <div class="explain-value" style="color:${trendColor};">
-                        <i class="fas ${trendIcon}" style="margin-right:4px;"></i>
-                        ${allTests.length >= 2 ? `${Math.abs(allTests[0].score - allTests[allTests.length-1].score)} point change` : 'Need 2+ tests'}
+
+                  <div class="stats-list">
+                    <div class="stats-list-item">
+                      <div class="icon"><i class="fas fa-clipboard-check"></i></div>
+                      <div class="label">
+                        Total Tests Taken
+                        <span class="description">Number of complete assessments you've submitted</span>
                       </div>
-                      <div class="explain-desc">${trendText}. Tracked by comparing your first and most recent test scores.</div>
+                      <div class="value">${allTests.length}</div>
                     </div>
-                    <div class="explain-item">
-                      <div class="explain-label"><i class="fas fa-chart-pie" style="margin-right:4px;"></i>Most Common Severity</div>
-                      <div class="explain-value">${mostCommonSeverity}</div>
-                      <div class="explain-desc">The severity level you've experienced most frequently across all assessments.</div>
+
+                    <div class="stats-list-item">
+                      <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
+                      <div class="label">
+                        Latest Severity Level
+                        <span class="description">${severityDesc}</span>
+                      </div>
+                      <div class="value">${latestLevel}</div>
                     </div>
-                    <div class="explain-item">
-                      <div class="explain-label"><i class="fas fa-calendar-check" style="margin-right:4px;"></i>Last Assessment</div>
-                      <div class="explain-value">${lastDate}</div>
-                      <div class="explain-desc">Date of your most recent trauma screening. Regular monitoring can help track changes.</div>
+
+                    <div class="stats-list-item">
+                      <div class="icon"><i class="fas fa-calculator"></i></div>
+                      <div class="label">
+                        Average Score
+                        <span class="description">Your mean score across all tests (range: 0-120)</span>
+                      </div>
+                      <div class="value">${avg.toFixed(1)}</div>
+                    </div>
+
+                    <div class="stats-list-item">
+                      <div class="icon"><i class="fas fa-arrow-up" style="color:#22c55e;"></i></div>
+                      <div class="label">
+                        Highest Score
+                        <span class="description">Your maximum score recorded on any test</span>
+                      </div>
+                      <div class="value">${highest}</div>
+                    </div>
+
+                    <div class="stats-list-item">
+                      <div class="icon"><i class="fas fa-arrow-down" style="color:#3b82f6;"></i></div>
+                      <div class="label">
+                        Lowest Score
+                        <span class="description">Your minimum score recorded on any test</span>
+                      </div>
+                      <div class="value">${lowest}</div>
+                    </div>
+
+                    <div class="stats-list-item">
+                      <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+                      <div class="label">
+                        Last Test Date
+                        <span class="description">The most recent date you completed an assessment</span>
+                      </div>
+                      <div class="value">${lastDate}</div>
                     </div>
                   </div>
-                  <p style="font-size:0.75rem;color:#7a6a8a;margin-top:0.8rem;padding:0.5rem 0;border-top:1px solid #f1edf9;">
-                    <i class="fas fa-info-circle" style="margin-right:4px;color:#7c3aed;"></i>
-                    <strong>About the scores:</strong> Scores range from 0-120. 
-                    <span style="color:#22c55e;">0-20: Minimal</span> · 
-                    <span style="color:#eab308;">21-40: Mild</span> · 
-                    <span style="color:#f59e0b;">41-60: Moderate</span> · 
-                    <span style="color:#ef4444;">61-80: High</span> · 
-                    <span style="color:#b91c1c;">81-120: Very High</span>
-                  </p>
+
+                  <div style="margin-top:1rem;padding:0.8rem;background:#f3edff;border-radius:16px;border-left:4px solid #7c3aed;">
+                    <p style="font-size:0.8rem;color:#4b4453;line-height:1.5;">
+                      <i class="fas fa-info-circle" style="color:#7c3aed;margin-right:6px;"></i>
+                      <strong>About the scoring:</strong> Scores range from 0–120. Higher scores indicate more trauma-related symptoms.
+                      This screening tool is for educational purposes only and does not provide a medical diagnosis.
+                      ${allTests.length > 1 ? 'Your scores show how your symptoms have changed over time.' : 'Take more tests to track your progress over time.'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1491,6 +1519,7 @@
 
       if (user) {
         try {
+          // Try to create user document if it doesn't exist
           const userRef = doc(db, 'users', user.uid);
           const snap = await getDoc(userRef);
           
@@ -1504,6 +1533,7 @@
               });
             } catch (createError) {
               console.warn('Could not create user document, continuing anyway:', createError);
+              // Continue anyway - the user is authenticated
             }
           }
           
@@ -1512,17 +1542,19 @@
           renderMain(user);
         } catch (error) {
           console.warn('Error initializing user, but continuing:', error);
+          // Even if there's an error, we should still try to render the app
           currentUser = user;
           loadingScreen.classList.add('hidden');
           renderDashboard();
         }
       } else {
+        // Not logged in - redirect to login
         loadingScreen.classList.add('hidden');
         window.location.href = 'index.html';
       }
     });
 
-    // Safety timeout
+    // Safety timeout: if auth hasn't resolved after 4 seconds, check manually
     setTimeout(() => {
       if (!authResolved) {
         const user = auth.currentUser;
