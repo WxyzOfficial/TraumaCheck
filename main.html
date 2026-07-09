@@ -9,15 +9,14 @@
   <link rel="shortcut icon" href="https://wxyzofficial.sirv.com/TraumaCheck/traumacheck.png">
   <link rel="apple-touch-icon" href="https://wxyzofficial.sirv.com/TraumaCheck/traumacheck.png">
 
-  <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 (Free) -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Chart.js -->
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- Firebase Modular SDK (v9+) -->
+
   <script type="importmap">
     {
       "imports": {
@@ -752,7 +751,7 @@
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
+
   <div id="loadingScreen">
     <div class="spinner"></div>
     <p>Loading TraumaCheck...</p>
@@ -773,7 +772,7 @@
   </footer>
 
   <script type="module">
-    // ----- FIREBASE CONFIG -----
+
     import { initializeApp } from 'firebase/app';
     import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
     import {
@@ -805,18 +804,18 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ----- STATE -----
+
     let currentUser = null;
     let allTests = [];
     let currentQuestionIndex = 0;
     let answers = new Array(30).fill(null);
     let isInitialized = false;
 
-    // ----- DOM REFS -----
+
     const appEl = document.getElementById('app');
     const loadingScreen = document.getElementById('loadingScreen');
 
-    // ----- UTILITY -----
+
     function showToast(msg, duration = 3500) {
       const old = document.querySelector('.toast');
       if (old) old.remove();
@@ -861,7 +860,7 @@
       }
     }
 
-    // ----- RENDER FUNCTIONS -----
+
     function renderMain(user) {
       currentUser = user;
       fetchTests(user.uid).then(() => {
@@ -883,7 +882,7 @@
       const highest = scores.length ? Math.max(...scores) : 0;
       const lowest = scores.length ? Math.min(...scores) : 0;
 
-      // Severity descriptions
+
       const severityDescriptions = {
         'Minimal': 'Low levels of trauma-related distress. You appear to be coping well.',
         'Mild': 'Some trauma symptoms present. Self-care and support may be beneficial.',
@@ -899,7 +898,6 @@
         <div class="app-layout">
           <div class="overlay" id="sidebarOverlay"></div>
 
-          <!-- SIDEBAR -->
           <div class="sidebar" id="sidebar">
             <div class="sidebar-brand">
               <i class="fas fa-brain"></i>
@@ -935,7 +933,6 @@
             </button>
           </div>
 
-          <!-- MAIN CONTENT -->
           <div class="main-content">
             <button class="hamburger" id="hamburgerBtn">
               <i class="fas fa-bars"></i> Menu
@@ -1078,7 +1075,7 @@
           const page = e.currentTarget.dataset.page;
           closeSidebar();
 
-          // Update active state
+
           document.querySelectorAll('.sidebar-item[data-page]').forEach(item => {
             item.classList.remove('active');
           });
@@ -1093,7 +1090,7 @@
       });
     }
 
-    // ----- TRAUMA QUESTIONS (30) -----
+
     const questions = [
       "I experience unwanted memories of stressful events.",
       "I feel emotionally distressed when reminded of the past.",
@@ -1229,7 +1226,7 @@
       }
     }
 
-    // ----- HISTORY -----
+
     function renderHistory() {
       const page = document.getElementById('pageContent');
       let html = `
@@ -1271,7 +1268,7 @@
 
       page.innerHTML = html;
 
-      // Delete handlers
+
       page.querySelectorAll('.btn-danger').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const id = e.currentTarget.dataset.id;
@@ -1289,7 +1286,7 @@
         });
       });
 
-      // View handlers
+
       page.querySelectorAll('.btn-nav').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const idx = parseInt(e.currentTarget.dataset.idx);
@@ -1297,7 +1294,7 @@
         });
       });
 
-      // Search
+
       document.getElementById('searchHist')?.addEventListener('input', (e) => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('.card.flex-between').forEach(el => {
@@ -1329,7 +1326,7 @@
       document.getElementById('backHist').addEventListener('click', renderHistory);
     }
 
-    // ----- STATS -----
+
     function renderStats() {
       const page = document.getElementById('pageContent');
 
@@ -1390,7 +1387,7 @@
         </div>
       `;
 
-      // Trend chart
+
       const ctx = document.getElementById('trendChart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
@@ -1426,7 +1423,7 @@
         }
       });
 
-      // Pie chart
+
       const ctx2 = document.getElementById('severityPie').getContext('2d');
       const colors = {
         'Minimal': '#22c55e',
@@ -1468,7 +1465,7 @@
       });
     }
 
-    // ----- PROFILE -----
+
     function renderProfile() {
       const page = document.getElementById('pageContent');
       const user = currentUser;
@@ -1507,7 +1504,7 @@
       document.getElementById('logoutProfile').addEventListener('click', () => signOut(auth));
     }
 
-    // ----- AUTH STATE -----
+
     let authResolved = false;
 
     onAuthStateChanged(auth, async (user) => {
@@ -1516,7 +1513,6 @@
 
       if (user) {
         try {
-          // Try to create user document if it doesn't exist
           const userRef = doc(db, 'users', user.uid);
           const snap = await getDoc(userRef);
           
@@ -1530,7 +1526,6 @@
               });
             } catch (createError) {
               console.warn('Could not create user document, continuing anyway:', createError);
-              // Continue anyway - the user is authenticated
             }
           }
           
@@ -1539,19 +1534,16 @@
           renderMain(user);
         } catch (error) {
           console.warn('Error initializing user, but continuing:', error);
-          // Even if there's an error, we should still try to render the app
           currentUser = user;
           loadingScreen.classList.add('hidden');
           renderDashboard();
         }
       } else {
-        // Not logged in - redirect to login
         loadingScreen.classList.add('hidden');
         window.location.href = 'index.html';
       }
     });
 
-    // Safety timeout: if auth hasn't resolved after 4 seconds, check manually
     setTimeout(() => {
       if (!authResolved) {
         const user = auth.currentUser;
