@@ -42,6 +42,41 @@
       flex-direction: column;
     }
 
+    /* ===== LOADING SCREEN ===== */
+    #loadingScreen {
+      position: fixed;
+      inset: 0;
+      background: #f8f7fc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    #loadingScreen .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #ede9fe;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #loadingScreen p {
+      color: #7a6a8a;
+      font-weight: 500;
+    }
+
+    #loadingScreen.hidden {
+      display: none;
+    }
+
     .app-layout {
       display: flex;
       min-height: 100vh;
@@ -655,6 +690,12 @@
   </style>
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen">
+    <div class="spinner"></div>
+    <p>Loading TraumaCheck...</p>
+  </div>
+
   <div id="app"></div>
 
   <footer class="footer">
@@ -701,15 +742,15 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // ----- DOM REFS -----
+    const appEl = document.getElementById('app');
+    const loadingScreen = document.getElementById('loadingScreen');
+
     // ----- STATE -----
     let currentUser = null;
     let allTests = [];
     let currentQuestionIndex = 0;
     let answers = new Array(30).fill(null);
-    let chartInstances = {};
-
-    // ----- DOM REFS -----
-    const appEl = document.getElementById('app');
 
     // ----- UTILITY -----
     function showToast(msg, duration = 3500) {
@@ -759,7 +800,10 @@
     // ----- RENDER FUNCTIONS -----
     function renderMain(user) {
       currentUser = user;
-      fetchTests(user.uid).then(() => renderDashboard());
+      fetchTests(user.uid).then(() => {
+        loadingScreen.classList.add('hidden');
+        renderDashboard();
+      });
     }
 
     function renderDashboard() {
@@ -1314,31 +1358,50 @@
     }
 
     // ----- AUTH STATE -----
+    // Use a flag to prevent multiple redirects
+    let authInitialized = false;
+
     onAuthStateChanged(auth, async (user) => {
+      if (authInitialized) return;
+      authInitialized = true;
+
       if (user) {
-        const ref = doc(db, 'users', user.uid);
-        const snap = await getDoc(ref);
-        if (!snap.exists()) {
-          await setDoc(ref, {
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-            createdAt: serverTimestamp()
-          });
+        try {
+          const ref = doc(db, 'users', user.uid);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) {
+            await setDoc(ref, {
+              name: user.displayName,
+              email: user.email,
+              photo: user.photoURL,
+              createdAt: serverTimestamp()
+            });
+          }
+          currentUser = user;
+          await fetchTests(user.uid);
+          renderMain(user);
+        } catch (error) {
+          console.error('Error initializing user:', error);
+          // Still try to render even if Firestore fails
+          currentUser = user;
+          renderMain(user);
         }
-        currentUser = user;
-        await fetchTests(user.uid);
-        renderMain(user);
       } else {
-        // Redirect to login page
+        // Not logged in - redirect to login
+        loadingScreen.classList.add('hidden');
         window.location.href = 'index.html';
       }
     });
 
-    // If somehow we're not logged in, redirect immediately
-    if (!auth.currentUser) {
-      window.location.href = 'index.html';
-    }
+    // Safety net: if after 5 seconds we're still loading and no auth state, redirect
+    setTimeout(() => {
+      if (!authInitialized) {
+        loadingScreen.classList.add('hidden');
+        if (!auth.currentUser) {
+          window.location.href = 'index.html';
+        }
+      }
+    }, 5000);
   </script>
 </body>
 </html>
