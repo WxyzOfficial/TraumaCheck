@@ -725,7 +725,8 @@
       orderBy,
       deleteDoc,
       addDoc,
-      serverTimestamp
+      serverTimestamp,
+      writeBatch
     } from 'firebase/firestore';
 
     const firebaseConfig = {
@@ -742,15 +743,16 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ----- DOM REFS -----
-    const appEl = document.getElementById('app');
-    const loadingScreen = document.getElementById('loadingScreen');
-
     // ----- STATE -----
     let currentUser = null;
     let allTests = [];
     let currentQuestionIndex = 0;
     let answers = new Array(30).fill(null);
+    let isInitialized = false;
+
+    // ----- DOM REFS -----
+    const appEl = document.getElementById('app');
+    const loadingScreen = document.getElementById('loadingScreen');
 
     // ----- UTILITY -----
     function showToast(msg, duration = 3500) {
@@ -792,7 +794,7 @@
           allTests.push({ id: doc.id, ...data });
         });
       } catch (e) {
-        showToast('Error loading tests');
+        console.warn('Error fetching tests:', e);
         allTests = [];
       }
     }
@@ -801,6 +803,9 @@
     function renderMain(user) {
       currentUser = user;
       fetchTests(user.uid).then(() => {
+        loadingScreen.classList.add('hidden');
+        renderDashboard();
+      }).catch(() => {
         loadingScreen.classList.add('hidden');
         renderDashboard();
       });
@@ -1073,6 +1078,7 @@
         await fetchTests(currentUser.uid);
         renderDashboard();
       } catch (e) {
+        console.error('Error saving test:', e);
         showToast('Error saving test: ' + e.message);
       }
     }
@@ -1130,6 +1136,7 @@
               renderHistory();
               showToast('Test deleted');
             } catch (e) {
+              console.error('Error deleting test:', e);
               showToast('Error deleting test');
             }
           }
@@ -1358,33 +1365,41 @@
     }
 
     // ----- AUTH STATE -----
-    // Use a flag to prevent multiple redirects
-    let authInitialized = false;
+    let authResolved = false;
 
     onAuthStateChanged(auth, async (user) => {
-      if (authInitialized) return;
-      authInitialized = true;
+      if (authResolved) return;
+      authResolved = true;
 
       if (user) {
         try {
-          const ref = doc(db, 'users', user.uid);
-          const snap = await getDoc(ref);
+          // Try to create user document if it doesn't exist
+          const userRef = doc(db, 'users', user.uid);
+          const snap = await getDoc(userRef);
+          
           if (!snap.exists()) {
-            await setDoc(ref, {
-              name: user.displayName,
-              email: user.email,
-              photo: user.photoURL,
-              createdAt: serverTimestamp()
-            });
+            try {
+              await setDoc(userRef, {
+                name: user.displayName || 'User',
+                email: user.email,
+                photo: user.photoURL || '',
+                createdAt: serverTimestamp()
+              });
+            } catch (createError) {
+              console.warn('Could not create user document, continuing anyway:', createError);
+              // Continue anyway - the user is authenticated
+            }
           }
+          
           currentUser = user;
           await fetchTests(user.uid);
           renderMain(user);
         } catch (error) {
-          console.error('Error initializing user:', error);
-          // Still try to render even if Firestore fails
+          console.warn('Error initializing user, but continuing:', error);
+          // Even if there's an error, we should still try to render the app
           currentUser = user;
-          renderMain(user);
+          loadingScreen.classList.add('hidden');
+          renderDashboard();
         }
       } else {
         // Not logged in - redirect to login
@@ -1393,15 +1408,26 @@
       }
     });
 
-    // Safety net: if after 5 seconds we're still loading and no auth state, redirect
+    // Safety timeout: if auth hasn't resolved after 4 seconds, check manually
     setTimeout(() => {
-      if (!authInitialized) {
-        loadingScreen.classList.add('hidden');
-        if (!auth.currentUser) {
+      if (!authResolved) {
+        const user = auth.currentUser;
+        if (user) {
+          authResolved = true;
+          currentUser = user;
+          fetchTests(user.uid).then(() => {
+            loadingScreen.classList.add('hidden');
+            renderMain(user);
+          }).catch(() => {
+            loadingScreen.classList.add('hidden');
+            renderMain(user);
+          });
+        } else {
+          loadingScreen.classList.add('hidden');
           window.location.href = 'index.html';
         }
       }
-    }, 5000);
+    }, 4000);
   </script>
 </body>
 </html>
