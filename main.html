@@ -41,7 +41,6 @@
       flex-direction: column;
     }
 
-    /* ===== LOADING SCREEN ===== */
     #loadingScreen {
       position: fixed;
       inset: 0;
@@ -83,7 +82,6 @@
       background: #f8f7fc;
     }
 
-    /* ===== SIDEBAR ===== */
     .sidebar {
       width: 260px;
       background: white;
@@ -217,7 +215,6 @@
       border-radius: 40px;
     }
 
-    /* ===== MAIN CONTENT ===== */
     .main-content {
       flex: 1;
       padding: 2rem 2rem 2rem 2rem;
@@ -226,7 +223,6 @@
       width: 100%;
     }
 
-    /* ===== CARDS ===== */
     .card {
       background: white;
       border-radius: 32px;
@@ -255,7 +251,6 @@
       font-size: 1.2rem;
     }
 
-    /* ===== STATS GRID ===== */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -292,7 +287,6 @@
       margin-top: 4px;
     }
 
-    /* ===== STATS LIST (for explanation) ===== */
     .stats-list {
       display: flex;
       flex-direction: column;
@@ -343,7 +337,54 @@
       font-weight: 400;
     }
 
-    /* ===== MOBILE MENU ===== */
+    .test-type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .test-type-card {
+      background: #faf8ff;
+      border: 2px solid #ede9fe;
+      border-radius: 24px;
+      padding: 1.2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .test-type-card:hover {
+      border-color: #c4b5d9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .test-type-card.selected {
+      border-color: #7c3aed;
+      background: #f3edff;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08);
+    }
+
+    .test-type-card i {
+      font-size: 2rem;
+      color: #7c3aed;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .test-type-card .type-name {
+      font-weight: 600;
+      color: #1e1a2e;
+      font-size: 0.9rem;
+    }
+
+    .test-type-card .type-desc {
+      font-size: 0.7rem;
+      color: #7a6a8a;
+      margin-top: 4px;
+    }
+
     .hamburger {
       display: none;
       background: white;
@@ -415,6 +456,10 @@
       .stat-value {
         font-size: 1.5rem;
       }
+
+      .test-type-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (max-width: 480px) {
@@ -447,9 +492,21 @@
         text-align: left;
         padding-left: 44px;
       }
+
+      .test-type-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+      }
+
+      .test-type-card {
+        padding: 0.8rem;
+      }
+
+      .test-type-card i {
+        font-size: 1.5rem;
+      }
     }
 
-    /* ===== QUESTIONNAIRE ===== */
     .question-container {
       max-width: 700px;
       margin: 0 auto;
@@ -597,7 +654,25 @@
       background: #fcd5d5;
     }
 
-    /* ===== SEVERITY BADGE ===== */
+    .btn-secondary {
+      background: #e8e4f0;
+      color: #4b4453;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: background 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: #ddd6e8;
+    }
+
     .severity-badge {
       display: inline-block;
       padding: 6px 18px;
@@ -606,7 +681,6 @@
       font-size: 0.8rem;
     }
 
-    /* ===== FLEX UTILITY ===== */
     .flex-between {
       display: flex;
       justify-content: space-between;
@@ -621,7 +695,6 @@
       gap: 8px;
     }
 
-    /* ===== TOAST ===== */
     .toast {
       position: fixed;
       bottom: 100px;
@@ -649,7 +722,6 @@
       opacity: 0.7;
     }
 
-    /* ===== SEARCH INPUT ===== */
     .search-input {
       padding: 10px 18px;
       border-radius: 40px;
@@ -667,7 +739,6 @@
       background: white;
     }
 
-    /* ===== FOOTER ===== */
     .footer {
       text-align: center;
       padding: 1.2rem 1rem;
@@ -696,7 +767,6 @@
       margin: 0 4px;
     }
 
-    /* ===== SCROLLBAR ===== */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -714,14 +784,12 @@
       background: #b0a0c8;
     }
 
-    /* ===== CHART CONTAINERS ===== */
     .chart-container {
       height: 200px;
       margin: 1rem 0;
       position: relative;
     }
 
-    /* ===== PROFILE ===== */
     .profile-avatar {
       width: 100px;
       height: 100px;
@@ -730,7 +798,6 @@
       object-fit: cover;
     }
 
-    /* ===== RESPONSIVE TABLES ===== */
     @media (max-width: 480px) {
       .flex-between {
         flex-direction: column;
@@ -747,6 +814,41 @@
         width: 100%;
         justify-content: center;
       }
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .filter-chip {
+      padding: 6px 16px;
+      border-radius: 30px;
+      border: 1.5px solid #e6def5;
+      background: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #4b4453;
+      transition: all 0.15s ease;
+    }
+
+    .filter-chip:hover {
+      border-color: #c4b5d9;
+      background: #faf8ff;
+    }
+
+    .filter-chip.active {
+      border-color: #7c3aed;
+      background: #f3edff;
+      color: #6d28d9;
+    }
+
+    .filter-chip i {
+      margin-right: 4px;
+      font-size: 0.7rem;
     }
   </style>
 </head>
@@ -787,7 +889,7 @@
       deleteDoc,
       addDoc,
       serverTimestamp,
-      writeBatch
+      where
     } from 'firebase/firestore';
 
     const firebaseConfig = {
@@ -804,17 +906,176 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    const TEST_TYPES = {
+      childhood: {
+        id: 'childhood',
+        label: 'Childhood Trauma',
+        icon: 'fa-child',
+        desc: 'Experiences from your early years',
+        color: '#7c3aed'
+      },
+      school: {
+        id: 'school',
+        label: 'School Trauma',
+        icon: 'fa-graduation-cap',
+        desc: 'Academic and social experiences',
+        color: '#3b82f6'
+      },
+      work: {
+        id: 'work',
+        label: 'Work Trauma',
+        icon: 'fa-briefcase',
+        desc: 'Professional and career-related stress',
+        color: '#f59e0b'
+      },
+      relationship: {
+        id: 'relationship',
+        label: 'Relationship Trauma',
+        icon: 'fa-heart',
+        desc: 'Intimate and social connections',
+        color: '#ec4899'
+      },
+      family: {
+        id: 'family',
+        label: 'Family Trauma',
+        icon: 'fa-users',
+        desc: 'Family dynamics and experiences',
+        color: '#14b8a6'
+      }
+    };
+
+    const QUESTION_SETS = {
+      childhood: [
+        "I often felt unloved or unwanted as a child.",
+        "I experienced physical punishment that felt excessive.",
+        "I witnessed domestic violence in my home.",
+        "A parent or caregiver was emotionally unavailable.",
+        "I felt responsible for my family's problems.",
+        "I was bullied or teased by siblings or peers.",
+        "My basic needs (food, clothing, shelter) were sometimes unmet.",
+        "I experienced a traumatic loss during childhood.",
+        "A caregiver struggled with substance abuse.",
+        "I was made to feel worthless or stupid.",
+        "I was afraid to go home after school.",
+        "My feelings were dismissed or invalidated.",
+        "I experienced a serious accident or injury.",
+        "A family member had a serious mental illness.",
+        "I felt different or out of place in my family.",
+        "I was forced to take on adult responsibilities too young.",
+        "My home environment felt unsafe or chaotic.",
+        "I was separated from a parent or caregiver.",
+        "I experienced sexual abuse or inappropriate touching.",
+        "I was shamed or humiliated in front of others."
+      ],
+      school: [
+        "I was bullied or harassed at school.",
+        "I felt intense pressure to achieve academically.",
+        "I was excluded or ostracized by classmates.",
+        "A teacher humiliated me in front of others.",
+        "I struggled to keep up with schoolwork.",
+        "I felt unsafe in the school environment.",
+        "I was punished unfairly by school staff.",
+        "I witnessed violence at school.",
+        "I felt invisible or overlooked by teachers.",
+        "I was mocked for my appearance or abilities.",
+        "I had difficulty making friends at school.",
+        "I was compared unfavorably to other students.",
+        "I experienced discrimination at school.",
+        "I was blamed for things I didn't do.",
+        "I felt like I didn't belong.",
+        "I was afraid to go to school.",
+        "I was forced to participate in activities I feared.",
+        "I was isolated from other students.",
+        "I had a traumatic experience with a school authority figure.",
+        "My academic struggles were treated as character flaws."
+      ],
+      work: [
+        "I was bullied or harassed by a coworker or supervisor.",
+        "I experienced burnout from excessive workload.",
+        "I was passed over for promotions unfairly.",
+        "I witnessed unethical behavior at work.",
+        "My contributions were ignored or minimized.",
+        "I was publicly criticized or shamed at work.",
+        "I felt unsafe in my work environment.",
+        "I was underpaid or exploited for my labor.",
+        "I experienced discrimination at work.",
+        "I was blamed for mistakes I didn't make.",
+        "I had a toxic relationship with a supervisor.",
+        "I felt trapped in my job.",
+        "I was harassed or threatened by a colleague.",
+        "I experienced a traumatic workplace incident.",
+        "My work-life balance was non-existent.",
+        "I was micromanaged and controlled.",
+        "I felt like I couldn't trust my coworkers.",
+        "I was isolated or excluded by my team.",
+        "I experienced a major failure or setback at work.",
+        "I was treated as replaceable or disposable."
+      ],
+      relationship: [
+        "I was betrayed by a romantic partner.",
+        "I experienced emotional abuse in a relationship.",
+        "I was gaslit or manipulated by a partner.",
+        "I felt controlled or possessed by a partner.",
+        "I was physically harmed by a partner.",
+        "I was coerced into sexual activity.",
+        "I was belittled or humiliated by a partner.",
+        "I was isolated from friends and family.",
+        "I was blamed for the relationship's problems.",
+        "I was cheated on or deceived.",
+        "I felt I couldn't leave a toxic relationship.",
+        "I was threatened with harm or abandonment.",
+        "I was financially controlled by a partner.",
+        "I was pressured to cut off support systems.",
+        "I was treated as property or an object.",
+        "I was made to feel I was 'too much' or 'not enough'.",
+        "My boundaries were repeatedly violated.",
+        "I was criticized for my appearance or worth.",
+        "I was punished with silence or withdrawal.",
+        "I felt unsafe in my own relationship."
+      ],
+      family: [
+        "I was criticized or judged harshly by family.",
+        "I felt I had to earn love from my family.",
+        "I was expected to be perfect.",
+        "My family minimized or denied my experiences.",
+        "I was treated differently than my siblings.",
+        "I was blamed for family conflicts.",
+        "I felt I couldn't express my true self at home.",
+        "My family invaded my privacy.",
+        "I was forced to choose sides in family disputes.",
+        "I was made to feel responsible for my parents' happiness.",
+        "I experienced family secrets that caused shame.",
+        "I was emotionally neglected by my family.",
+        "I was physically harmed by a family member.",
+        "I felt like a burden to my family.",
+        "My family dismissed my emotions.",
+        "I was compared unfavorably to other family members.",
+        "I was controlled or restricted by family rules.",
+        "I witnessed unhealthy family dynamics.",
+        "I felt I couldn't escape my family situation.",
+        "I was shamed for my choices or identity."
+      ]
+    };
+
+    function shuffleArray(arr) {
+      const shuffled = [...arr];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
 
     let currentUser = null;
     let allTests = [];
+    let currentTestType = null;
+    let currentQuestions = [];
     let currentQuestionIndex = 0;
-    let answers = new Array(30).fill(null);
-    let isInitialized = false;
-
+    let answers = [];
+    let currentTestFilter = 'all';
 
     const appEl = document.getElementById('app');
     const loadingScreen = document.getElementById('loadingScreen');
-
 
     function showToast(msg, duration = 3500) {
       const old = document.querySelector('.toast');
@@ -845,9 +1106,34 @@
       return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     }
 
-    async function fetchTests(uid) {
+    function getSeverity(score, maxScore) {
+      const percentage = (score / maxScore) * 100;
+      if (percentage <= 20) return 'Minimal';
+      if (percentage <= 40) return 'Mild';
+      if (percentage <= 60) return 'Moderate';
+      if (percentage <= 80) return 'High';
+      return 'Very High';
+    }
+
+    function getSeverityColor(severity) {
+      const colors = {
+        'Minimal': '#d1fae5',
+        'Mild': '#fef3c7',
+        'Moderate': '#fed7aa',
+        'High': '#fca5a5',
+        'Very High': '#f87171'
+      };
+      return colors[severity] || '#ede9fe';
+    }
+
+    async function fetchTests(uid, type = null) {
       try {
-        const q = query(collection(db, 'users', uid, 'tests'), orderBy('timestamp', 'desc'));
+        let q;
+        if (type) {
+          q = query(collection(db, 'users', uid, 'tests'), where('testType', '==', type), orderBy('timestamp', 'desc'));
+        } else {
+          q = query(collection(db, 'users', uid, 'tests'), orderBy('timestamp', 'desc'));
+        }
         const snap = await getDocs(q);
         allTests = [];
         snap.forEach(doc => {
@@ -859,7 +1145,6 @@
         allTests = [];
       }
     }
-
 
     function renderMain(user) {
       currentUser = user;
@@ -882,6 +1167,11 @@
       const highest = scores.length ? Math.max(...scores) : 0;
       const lowest = scores.length ? Math.min(...scores) : 0;
 
+      const typeCounts = {};
+      allTests.forEach(t => {
+        const type = t.testType || 'general';
+        typeCounts[type] = (typeCounts[type] || 0) + 1;
+      });
 
       const severityDescriptions = {
         'Minimal': 'Low levels of trauma-related distress. You appear to be coping well.',
@@ -1038,6 +1328,20 @@
                     </div>
                   </div>
 
+                  ${Object.keys(typeCounts).length > 0 ? `
+                    <div style="margin-top:1rem;padding:0.8rem;background:#f8f5ff;border-radius:16px;">
+                      <h4 style="font-size:0.8rem;color:#4b4453;margin-bottom:0.5rem;">Tests by Type:</h4>
+                      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                        ${Object.entries(typeCounts).map(([type, count]) => `
+                          <span style="padding:4px 14px;border-radius:20px;background:${TEST_TYPES[type]?.color || '#7c3aed'}20;font-size:0.75rem;font-weight:500;color:${TEST_TYPES[type]?.color || '#7c3aed'};">
+                            <i class="fas ${TEST_TYPES[type]?.icon || 'fa-tag'}"></i>
+                            ${TEST_TYPES[type]?.label || type}: ${count}
+                          </span>
+                        `).join('')}
+                      </div>
+                    </div>
+                  ` : ''}
+
                   <div style="margin-top:1rem;padding:0.8rem;background:#f3edff;border-radius:16px;border-left:4px solid #7c3aed;">
                     <p style="font-size:0.8rem;color:#4b4453;line-height:1.5;">
                       <i class="fas fa-info-circle" style="color:#7c3aed;margin-right:6px;"></i>
@@ -1075,14 +1379,13 @@
           const page = e.currentTarget.dataset.page;
           closeSidebar();
 
-
           document.querySelectorAll('.sidebar-item[data-page]').forEach(item => {
             item.classList.remove('active');
           });
           e.currentTarget.classList.add('active');
 
           if (page === 'dashboard') renderDashboard();
-          else if (page === 'test') renderTest();
+          else if (page === 'test') renderTestTypeSelector();
           else if (page === 'history') renderHistory();
           else if (page === 'stats') renderStats();
           else if (page === 'profile') renderProfile();
@@ -1090,52 +1393,88 @@
       });
     }
 
+    function renderTestTypeSelector() {
+      const page = document.getElementById('pageContent');
+      if (!page) return;
 
-    const questions = [
-      "I experience unwanted memories of stressful events.",
-      "I feel emotionally distressed when reminded of the past.",
-      "I avoid places or people that remind me of difficult times.",
-      "I feel constantly on guard or alert.",
-      "I have trouble falling or staying asleep.",
-      "I feel emotionally numb or detached.",
-      "I have difficulty concentrating.",
-      "I find it hard to trust others.",
-      "I feel anxious even in safe situations.",
-      "My relationships feel strained.",
-      "I have negative thoughts about myself.",
-      "I remember painful childhood experiences.",
-      "I have sudden mood swings.",
-      "I feel unsafe even when there is no threat.",
-      "Daily tasks feel overwhelming.",
-      "I avoid talking about my feelings.",
-      "I feel irritable or angry without reason.",
-      "I have nightmares or disturbing dreams.",
-      "I feel disconnected from my body.",
-      "I blame myself for things that happened.",
-      "I feel hopeless about the future.",
-      "I startle easily at loud noises.",
-      "I have physical pain with no clear cause.",
-      "I feel like no one understands me.",
-      "I use substances to cope.",
-      "I feel shame about my past.",
-      "I have difficulty maintaining friendships.",
-      "I feel like I'm broken.",
-      "I feel scared of losing control.",
-      "I wish I could forget certain memories."
-    ];
+      page.innerHTML = `
+        <div class="card">
+          <h2><i class="fas fa-clipboard-list"></i> Choose Your Trauma Test</h2>
+          <p style="color:#6a5a7a;margin-top:0.5rem;">Select the type of trauma assessment you'd like to take. Each test has unique questions tailored to that area.</p>
+
+          <div class="test-type-grid">
+            ${Object.values(TEST_TYPES).map(type => `
+              <div class="test-type-card" data-type="${type.id}">
+                <i class="fas ${type.icon}" style="color:${type.color};"></i>
+                <div class="type-name">${type.label}</div>
+                <div class="type-desc">${type.desc}</div>
+                <div style="margin-top:8px;font-size:0.7rem;color:#7a6a8a;">${QUESTION_SETS[type.id].length} questions</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="text-align:center;margin-top:1rem;">
+            <button class="btn-primary" id="startTestBtn" disabled>
+              <i class="fas fa-play"></i> Start Test
+            </button>
+            <button class="btn-secondary" id="cancelTestBtn" style="margin-left:0.5rem;">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        </div>
+      `;
+
+      let selectedType = null;
+
+      page.querySelectorAll('.test-type-card').forEach(el => {
+        el.addEventListener('click', () => {
+          page.querySelectorAll('.test-type-card').forEach(c => c.classList.remove('selected'));
+          el.classList.add('selected');
+          selectedType = el.dataset.type;
+          document.getElementById('startTestBtn').disabled = false;
+        });
+      });
+
+      document.getElementById('startTestBtn').addEventListener('click', () => {
+        if (selectedType) {
+          startTest(selectedType);
+        }
+      });
+
+      document.getElementById('cancelTestBtn').addEventListener('click', () => {
+        renderDashboard();
+      });
+    }
+
+    function startTest(typeId) {
+      currentTestType = typeId;
+      const questions = QUESTION_SETS[typeId];
+      currentQuestions = shuffleArray(questions);
+      currentQuestionIndex = 0;
+      answers = new Array(currentQuestions.length).fill(null);
+      renderTest();
+    }
 
     function renderTest() {
       const page = document.getElementById('pageContent');
       if (!page) return;
 
-      const q = questions[currentQuestionIndex];
+      const totalQuestions = currentQuestions.length;
+      const q = currentQuestions[currentQuestionIndex];
       const selected = answers[currentQuestionIndex];
-      const progress = ((currentQuestionIndex + 1) / 30) * 100;
+      const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
       page.innerHTML = `
         <div class="card question-container">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <span style="font-weight:600;font-size:0.9rem;color:#4b4453;">
+              <i class="fas ${TEST_TYPES[currentTestType]?.icon}" style="color:#7c3aed;margin-right:6px;"></i>
+              ${TEST_TYPES[currentTestType]?.label}
+            </span>
+            <span style="color:#7a6a8a;font-size:0.85rem;font-weight:500;">${Math.round(progress)}%</span>
+          </div>
           <div class="question-progress">
-            <span class="q-num"><i class="fas fa-question-circle" style="margin-right:6px;color:#7c3aed;"></i>Question ${currentQuestionIndex+1}/30</span>
+            <span class="q-num"><i class="fas fa-question-circle" style="margin-right:6px;color:#7c3aed;"></i>Question ${currentQuestionIndex+1}/${totalQuestions}</span>
             <span class="q-pct">${Math.round(progress)}%</span>
           </div>
           <div class="progress-bar-bg">
@@ -1151,9 +1490,14 @@
             <button class="btn-nav" id="prevQ" ${currentQuestionIndex===0?'disabled':''}>
               <i class="fas fa-arrow-left"></i> Previous
             </button>
-            <button class="btn-primary" id="nextQ">
-              ${currentQuestionIndex===29 ? '<i class="fas fa-check"></i> Submit Test' : 'Next <i class="fas fa-arrow-right"></i>'}
-            </button>
+            <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+              <button class="btn-secondary" id="cancelTest">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button class="btn-primary" id="nextQ">
+                ${currentQuestionIndex === totalQuestions - 1 ? '<i class="fas fa-check"></i> Submit Test' : 'Next <i class="fas fa-arrow-right"></i>'}
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -1178,12 +1522,20 @@
           showToast('Please select an answer');
           return;
         }
-        if (currentQuestionIndex === 29) {
+        if (currentQuestionIndex === currentQuestions.length - 1) {
           submitTest();
           return;
         }
         currentQuestionIndex++;
         renderTest();
+      });
+
+      document.getElementById('cancelTest').addEventListener('click', () => {
+        if (confirm('Cancel this test? Your progress will be lost.')) {
+          answers = [];
+          currentQuestionIndex = 0;
+          renderTestTypeSelector();
+        }
       });
     }
 
@@ -1193,22 +1545,24 @@
         return;
       }
 
+      const maxScore = currentQuestions.length * 4;
       const score = answers.reduce((a, b) => a + b, 0);
-      const percentage = (score / 120) * 100;
-      let severity = '';
-      if (score <= 20) severity = 'Minimal';
-      else if (score <= 40) severity = 'Mild';
-      else if (score <= 60) severity = 'Moderate';
-      else if (score <= 80) severity = 'High';
-      else severity = 'Very High';
+      const percentage = (score / maxScore) * 100;
+      const severity = getSeverity(score, maxScore);
+
+      const testType = currentTestType;
+      const typeInfo = TEST_TYPES[testType];
 
       const data = {
         score,
         percentage: Math.round(percentage),
         severity,
+        testType: testType,
+        testTypeLabel: typeInfo?.label || 'General',
         answers: answers.slice(),
+        questionSet: currentQuestions.slice(),
         timestamp: serverTimestamp(),
-        categoryScores: { intrusive: score * 0.2, emotional: score * 0.2 },
+        maxPossibleScore: maxScore,
         recommendations: 'Consider speaking with a professional for further guidance.',
         areasAffected: ['Intrusive', 'Emotional', 'Avoidance', 'Hypervigilance', 'Sleep', 'Numbness'].slice(0, 3)
       };
@@ -1216,7 +1570,7 @@
       try {
         await addDoc(collection(db, 'users', currentUser.uid, 'tests'), data);
         showToast('Test submitted successfully!');
-        answers = new Array(30).fill(null);
+        answers = [];
         currentQuestionIndex = 0;
         await fetchTests(currentUser.uid);
         renderDashboard();
@@ -1226,35 +1580,50 @@
       }
     }
 
-
     function renderHistory() {
       const page = document.getElementById('pageContent');
+
+      const types = ['all', ...new Set(allTests.map(t => t.testType || 'general'))];
+
       let html = `
         <div class="card">
           <h2><i class="fas fa-history"></i> Previous Tests</h2>
+          <div class="filter-chips">
+            ${types.map(type => `
+              <button class="filter-chip ${currentTestFilter === type ? 'active' : ''}" data-type="${type}">
+                ${type === 'all' ? '<i class="fas fa-th-list"></i> All' : `<i class="fas ${TEST_TYPES[type]?.icon || 'fa-tag'}"></i> ${TEST_TYPES[type]?.label || type}`}
+              </button>
+            `).join('')}
+          </div>
           <input class="search-input" id="searchHist" placeholder="Search by date..." style="margin-top:0.8rem;">
         </div>
       `;
 
-      if (allTests.length === 0) {
-        html += `<div class="card"><p style="color:#7a6a8a;"><i class="fas fa-info-circle" style="margin-right:8px;"></i>No tests yet. Take your first trauma assessment.</p></div>`;
+      const filteredTests = currentTestFilter === 'all' 
+        ? allTests 
+        : allTests.filter(t => (t.testType || 'general') === currentTestFilter);
+
+      if (filteredTests.length === 0) {
+        html += `<div class="card"><p style="color:#7a6a8a;"><i class="fas fa-info-circle" style="margin-right:8px;"></i>No tests found. Take your first trauma assessment.</p></div>`;
       } else {
-        allTests.forEach((t, idx) => {
-          const bgColor = t.severity === 'Minimal' ? '#d1fae5' :
-            t.severity === 'Mild' ? '#fef3c7' :
-            t.severity === 'Moderate' ? '#fed7aa' :
-            t.severity === 'High' ? '#fca5a5' : '#f87171';
+        filteredTests.forEach((t, idx) => {
+          const bgColor = getSeverityColor(t.severity);
 
           html += `
-            <div class="card flex-between">
+            <div class="card flex-between" data-test-id="${t.id}">
               <div>
                 <strong>${formatDate(t.timestamp)}</strong> ${formatTime(t.timestamp)}
+                <br>
+                <span style="font-size:0.75rem;color:#7a6a8a;">
+                  <i class="fas ${TEST_TYPES[t.testType]?.icon || 'fa-tag'}"></i>
+                  ${TEST_TYPES[t.testType]?.label || t.testTypeLabel || 'General'}
+                </span>
                 <br>
                 <span class="severity-badge" style="background:${bgColor};">${t.severity}</span>
                 <span style="margin-left:8px;color:#4b4453;">Score: ${t.score}</span>
               </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="btn-nav" data-idx="${idx}">
+                <button class="btn-nav" data-idx="${allTests.indexOf(t)}">
                   <i class="fas fa-eye"></i> View
                 </button>
                 <button class="btn-danger" data-id="${t.id}">
@@ -1268,6 +1637,12 @@
 
       page.innerHTML = html;
 
+      page.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          currentTestFilter = chip.dataset.type;
+          renderHistory();
+        });
+      });
 
       page.querySelectorAll('.btn-danger').forEach(btn => {
         btn.addEventListener('click', async (e) => {
@@ -1286,14 +1661,12 @@
         });
       });
 
-
       page.querySelectorAll('.btn-nav').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const idx = parseInt(e.currentTarget.dataset.idx);
           showTestDetail(allTests[idx]);
         });
       });
-
 
       document.getElementById('searchHist')?.addEventListener('input', (e) => {
         const val = e.target.value.toLowerCase();
@@ -1306,13 +1679,16 @@
 
     function showTestDetail(test) {
       const page = document.getElementById('pageContent');
+      const typeInfo = TEST_TYPES[test.testType];
+      
       page.innerHTML = `
         <div class="card">
           <h2><i class="fas fa-file-alt"></i> Test Details</h2>
           <div style="margin-top:1rem;display:grid;grid-template-columns:1fr;gap:0.6rem;">
+            <p><strong>Type:</strong> <i class="fas ${typeInfo?.icon || 'fa-tag'}"></i> ${typeInfo?.label || test.testTypeLabel || 'General'}</p>
             <p><strong>Date:</strong> ${formatDate(test.timestamp)} ${formatTime(test.timestamp)}</p>
-            <p><strong>Score:</strong> ${test.score} / 120 (${test.percentage}%)</p>
-            <p><strong>Severity:</strong> <span class="severity-badge" style="background:#ede9fe;">${test.severity}</span></p>
+            <p><strong>Score:</strong> ${test.score} / ${test.maxPossibleScore || 120} (${test.percentage}%)</p>
+            <p><strong>Severity:</strong> <span class="severity-badge" style="background:${getSeverityColor(test.severity)};">${test.severity}</span></p>
             <p><strong>Areas affected:</strong> ${(test.areasAffected || ['—']).join(', ')}</p>
             <p><strong>Recommendations:</strong> ${test.recommendations || 'Speak with a professional.'}</p>
           </div>
@@ -1325,7 +1701,6 @@
       `;
       document.getElementById('backHist').addEventListener('click', renderHistory);
     }
-
 
     function renderStats() {
       const page = document.getElementById('pageContent');
@@ -1340,6 +1715,17 @@
         return;
       }
 
+      const typeStats = {};
+      allTests.forEach(t => {
+        const type = t.testType || 'general';
+        if (!typeStats[type]) {
+          typeStats[type] = { tests: [], scores: [], severities: [] };
+        }
+        typeStats[type].tests.push(t);
+        typeStats[type].scores.push(t.score);
+        typeStats[type].severities.push(t.severity);
+      });
+
       const scores = allTests.map(t => t.score);
       const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
       const sorted = [...scores].sort((a, b) => a - b);
@@ -1350,9 +1736,6 @@
       const severityCounts = {};
       allTests.forEach(t => { severityCounts[t.severity] = (severityCounts[t.severity] || 0) + 1; });
       const mostCommon = Object.entries(severityCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
-      const improvement = allTests.length > 1 ? (allTests[0].score - allTests[allTests.length - 1].score) : 0;
-      const improvementIcon = improvement > 0 ? 'fa-arrow-up' : improvement < 0 ? 'fa-arrow-down' : 'fa-minus';
-      const improvementColor = improvement > 0 ? '#22c55e' : improvement < 0 ? '#ef4444' : '#7a6a8a';
 
       page.innerHTML = `
         <div class="card">
@@ -1364,15 +1747,35 @@
             <div class="stat-card"><div class="stat-value">${highest}</div><div class="stat-label">Highest</div></div>
             <div class="stat-card"><div class="stat-value">${lowest}</div><div class="stat-label">Lowest</div></div>
             <div class="stat-card"><div class="stat-value">${mostCommon}</div><div class="stat-label">Most common severity</div></div>
-            <div class="stat-card">
-              <div class="stat-value" style="color:${improvementColor};">
-                <i class="fas ${improvementIcon}" style="font-size:1.2rem;margin-right:4px;"></i>
-                ${Math.abs(improvement)}
-              </div>
-              <div class="stat-label">Change (latest vs oldest)</div>
-            </div>
           </div>
         </div>
+
+        ${Object.entries(typeStats).map(([type, data]) => {
+          const typeInfo = TEST_TYPES[type];
+          const typeAvg = data.scores.reduce((a, b) => a + b, 0) / data.scores.length;
+          const typeMax = Math.max(...data.scores);
+          const typeMin = Math.min(...data.scores);
+          const typeSeverityCounts = {};
+          data.severities.forEach(s => { typeSeverityCounts[s] = (typeSeverityCounts[s] || 0) + 1; });
+          const typeMostCommon = Object.entries(typeSeverityCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
+
+          return `
+            <div class="card">
+              <h3 style="font-weight:600;font-size:1rem;color:#1e1a2e;margin-bottom:0.8rem;">
+                <i class="fas ${typeInfo?.icon || 'fa-tag'}" style="color:${typeInfo?.color || '#7c3aed'};margin-right:8px;"></i>
+                ${typeInfo?.label || type} Statistics
+              </h3>
+              <div class="stats-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));">
+                <div class="stat-card"><div class="stat-value">${data.tests.length}</div><div class="stat-label">Tests</div></div>
+                <div class="stat-card"><div class="stat-value">${typeAvg.toFixed(1)}</div><div class="stat-label">Avg score</div></div>
+                <div class="stat-card"><div class="stat-value">${typeMax}</div><div class="stat-label">Highest</div></div>
+                <div class="stat-card"><div class="stat-value">${typeMin}</div><div class="stat-label">Lowest</div></div>
+                <div class="stat-card"><div class="stat-value">${typeMostCommon}</div><div class="stat-label">Most common</div></div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+
         <div class="card">
           <h3 style="font-weight:600;margin-bottom:0.8rem;font-size:1rem;color:#4b4453;">
             <i class="fas fa-chart-simple" style="color:#7c3aed;margin-right:8px;"></i>Score Trend
@@ -1386,7 +1789,6 @@
           <div class="chart-container"><canvas id="severityPie"></canvas></div>
         </div>
       `;
-
 
       const ctx = document.getElementById('trendChart').getContext('2d');
       new Chart(ctx, {
@@ -1407,22 +1809,13 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
-            y: {
-              beginAtZero: true,
-              max: 120,
-              grid: { color: 'rgba(0,0,0,0.04)' }
-            },
-            x: {
-              grid: { display: false }
-            }
+            y: { beginAtZero: true, max: 120, grid: { color: 'rgba(0,0,0,0.04)' } },
+            x: { grid: { display: false } }
           }
         }
       });
-
 
       const ctx2 = document.getElementById('severityPie').getContext('2d');
       const colors = {
@@ -1453,18 +1846,13 @@
           plugins: {
             legend: {
               position: 'bottom',
-              labels: {
-                padding: 16,
-                usePointStyle: true,
-                pointStyle: 'circle'
-              }
+              labels: { padding: 16, usePointStyle: true, pointStyle: 'circle' }
             }
           },
           cutout: '60%'
         }
       });
     }
-
 
     function renderProfile() {
       const page = document.getElementById('pageContent');
@@ -1503,7 +1891,6 @@
 
       document.getElementById('logoutProfile').addEventListener('click', () => signOut(auth));
     }
-
 
     let authResolved = false;
 
